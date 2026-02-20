@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 
 // ── 권한 ──────────────────────────────────────────────────────
 const ADMIN_KEYS = ["haks-admin", "haks-owner"];
@@ -61,7 +61,6 @@ export default function App() {
   const [searchQ, setSearchQ] = useState("");
   const [sortBy, setSortBy] = useState("date");
   const [filterVerdict, setFilterVerdict] = useState("ALL");
-  const [mobileTab, setMobileTab] = useState("dashboard");
 
   // 로컬스토리지 로드
   useEffect(() => {
@@ -311,7 +310,6 @@ export default function App() {
   const Dashboard = () => {
     const buyCount = stocks.filter(s => ["STRONG BUY","BUY"].includes(s.ib?.verdict)).length;
     const holdCount = stocks.filter(s => s.ib?.verdict === "HOLD").length;
-    const avoidCount = stocks.filter(s => ["REDUCE","AVOID"].includes(s.ib?.verdict)).length;
     const avgUpside = stocks.length
       ? (stocks.reduce((a,s) => a + (parseFloat(s.ib?.upsideDownside) || 0), 0) / stocks.length).toFixed(1)
       : 0;
@@ -369,7 +367,7 @@ export default function App() {
           </select>
           {isAdmin && (
             <button className="btn btn-ghost btn-sm" style={{ marginLeft: "auto" }}
-              onClick={() => { setEditTarget(null); setView("manual-add"); }}>+ 직접 추가</button>
+              onClick={() => setView("manual-add")}>+ 직접 추가</button>
           )}
         </div>
 
@@ -605,7 +603,6 @@ export default function App() {
 
   // ── 상세 뷰 ─────────────────────────────────────────────────
   const [detailTab, setDetailTab] = useState("overview");
-  const [editTarget, setEditTarget] = useState(null);
 
   const DetailView = ({ stock }) => {
     if (!stock) return null;
