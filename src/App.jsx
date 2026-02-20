@@ -986,7 +986,7 @@ export default function App() {
         <div className="card" style={{ padding: 24, marginBottom: 16 }}>
           <div className="section-label">데이터 관리</div>
           <button className="btn btn-danger btn-sm" onClick={() => {
-            if (confirm("모든 분석 데이터를 삭제할까요?")) {
+            if (window.confirm("모든 분석 데이터를 삭제할까요?")) {
               save([]);
               setSelected(null);
               setView("dashboard");
