@@ -1,16 +1,18 @@
 // netlify/functions/analyze.js
 // Netlify Functions — /api/analyze 라우트 처리
 
-export default async (req, context) => {
-  if (req.method !== "POST") {
-    return new Response("Method Not Allowed", { status: 405 });
+exports.handler = async (event, context) => {
+  if (event.httpMethod !== "POST") {
+    return { statusCode: 405, body: "Method Not Allowed" };
   }
 
-  const { companyName, anthropicKey, depth = "deep" } = await req.json();
+  const { companyName, anthropicKey, depth = "deep" } = JSON.parse(event.body || "{}");
   if (!companyName || !anthropicKey) {
-    return new Response(JSON.stringify({ error: "companyName and anthropicKey required" }), {
-      status: 400, headers: { "Content-Type": "application/json" }
-    });
+    return {
+      statusCode: 400,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ error: "companyName and anthropicKey required" })
+    };
   }
 
   const MODEL = "claude-opus-4-6";
@@ -122,18 +124,18 @@ export default async (req, context) => {
       depth,
     };
 
-    return new Response(JSON.stringify(result), {
-      status: 200,
-      headers: { "Content-Type": "application/json" }
-    });
+    return {
+      statusCode: 200,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(result)
+    };
 
   } catch (e) {
     console.error("Analyze error:", e.message);
-    return new Response(JSON.stringify({ error: e.message }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" }
-    });
+    return {
+      statusCode: 500,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ error: e.message })
+    };
   }
 };
-
-export const config = { path: "/api/analyze" };
